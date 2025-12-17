@@ -67,6 +67,11 @@ public class TextField {
             quantidade = scanner.nextDouble();
             scanner.nextLine();
 
+            if (quantidade <= 0){
+                System.out.println("A quantidade não pode ser 0 ou menor.");
+                return;
+            }
+
             System.out.println("Digite a moeda a ser CONVERTIDA:");
             moedaConvert = scanner.nextLine().toUpperCase();
 

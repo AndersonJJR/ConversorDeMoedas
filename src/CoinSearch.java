@@ -24,8 +24,11 @@ public class CoinSearch {
 
     public void convertCoin(String moedaUser, double quantidade, String moedaConvert){
 
+        String coinUser = moedaUser.trim().toUpperCase();
+        String coinConvert = moedaConvert.trim().toUpperCase();
+
         String apiKey = "543ac8c9fbcb888a707419cc";
-        String url = "https://v6.exchangerate-api.com/v6/" + apiKey + "/latest/" + moedaUser.toUpperCase();
+        String url = "https://v6.exchangerate-api.com/v6/" + apiKey + "/latest/" + coinUser;
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -41,25 +44,29 @@ public class CoinSearch {
 
             exchangeResponse = gson.fromJson(objectRoot, ExchangeResponse.class);
 
-            if(exchangeResponse.conversion_rates.containsKey(moedaConvert) &&
-            exchangeResponse.conversion_rates.containsKey(moedaUser)) {
-                valor = quantidade * exchangeResponse.conversion_rates.getOrDefault(moedaConvert, 0.0);
-
-                gson.newBuilder().setPrettyPrinting().create();
-
-                System.out.println("\n------------- CONVERSÃO -------------");
-                System.out.println("Moeda fornecida: " + moedaUser + "\nQuantidade: " + quantidade);
-
-                System.out.println("\n------------- CONVERSÃO -------------");
-                System.out.println("Moeda convertida: "+ moedaConvert + "\nQuantidade: " + df.format(valor));
-
-                moedaFornecida.add(moedaUser);
-                moedaConvertida.add(moedaConvert);
-                moedaQuantidade.add(quantidade);
-
-            } else {
-                System.out.println("UMA ou DUAS moedas incorretas!");
+            if (exchangeResponse.conversion_rates == null) {
+                System.out.println("Moeda possuida é invalida!");
+                return;
             }
+
+            if (!exchangeResponse.conversion_rates.containsKey(moedaConvert)){
+                System.out.println("Moeda a ser convertida é invalida!");
+                return;
+            }
+
+            valor = quantidade * exchangeResponse.conversion_rates.getOrDefault(coinConvert, 0.0);
+
+            gson.newBuilder().setPrettyPrinting().create();
+
+            System.out.println("\n------------- CONVERSÃO -------------");
+            System.out.println("Moeda fornecida: " + moedaUser + "\nQuantidade: " + quantidade);
+
+            System.out.println("\n------------- CONVERSÃO -------------");
+            System.out.println("Moeda convertida: "+ moedaConvert + "\nQuantidade: " + df.format(valor));
+
+            moedaFornecida.add(moedaUser);
+            moedaConvertida.add(moedaConvert);
+            moedaQuantidade.add(quantidade);
 
         } catch (IOException | InterruptedException e) {
             System.out.println("Não foi possivel verificar a cotação de preços");
@@ -72,7 +79,7 @@ public class CoinSearch {
         if (!moedaFornecida.isEmpty()) {
             for (int i = 0; i < moedaFornecida.size(); i++) {
                 System.out.println( (indice + i) + " Foi-se convertido a moeda " + moedaFornecida.get(i) +
-                        " com a quantidade " + moedaQuantidade.get(i) +
+                        " com o valor " + moedaQuantidade.get(i) +
                         " para a moeda " + moedaConvertida.get(i));
 
             }
