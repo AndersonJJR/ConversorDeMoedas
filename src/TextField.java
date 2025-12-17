@@ -59,32 +59,18 @@ public class TextField {
 
     public void opcaoDois(){
         try {
+
             System.out.println("Digite a moeda POSSUIDA:");
             moedaUser = scanner.nextLine().toUpperCase();
-
-            if (moedaUser.length() < 3){
-                System.out.println("Moeda invalida!");
-                opcaoDois();
-            }
 
             System.out.println("Digite a QUANTIDADE dessa moeda:");
             quantidade = scanner.nextDouble();
             scanner.nextLine();
 
-            if (quantidade < 0){
-                System.out.println("Não há quantia necessária para conversão.");
-                opcaoDois();
-            }
-
             System.out.println("Digite a moeda a ser CONVERTIDA:");
             moedaConvert = scanner.nextLine().toUpperCase();
 
-            if (moedaConvert.length() < 3){
-                System.out.println("Moeda invalida!");
-                opcaoDois();
-            } else {
-                coinSearch.convertCoin(moedaUser, quantidade, moedaConvert);
-            }
+            coinSearch.convertCoin(moedaUser, quantidade, moedaConvert);
 
         } catch (InputMismatchException e) {
             System.out.println("Digite apenas números!");

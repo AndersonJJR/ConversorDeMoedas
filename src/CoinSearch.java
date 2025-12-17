@@ -17,6 +17,7 @@ public class CoinSearch {
     Gson gson = new Gson();
     ExchangeResponse exchangeResponse = new ExchangeResponse();
     DecimalFormat df = new DecimalFormat("0.00");
+    double valor;
     List<String> moedaFornecida = new ArrayList<>();
     List<String> moedaConvertida = new ArrayList<>();
     List<Double> moedaQuantidade = new ArrayList<>();
@@ -39,19 +40,26 @@ public class CoinSearch {
             JsonObject objectRoot = element.getAsJsonObject();
 
             exchangeResponse = gson.fromJson(objectRoot, ExchangeResponse.class);
-            double valor = quantidade * exchangeResponse.conversion_rates.getOrDefault(moedaConvert , 0.0);
 
-            gson.newBuilder().setPrettyPrinting().create();
+            if(exchangeResponse.conversion_rates.containsKey(moedaConvert) &&
+            exchangeResponse.conversion_rates.containsKey(moedaUser)) {
+                valor = quantidade * exchangeResponse.conversion_rates.getOrDefault(moedaConvert, 0.0);
 
-            System.out.println("\n------------- CONVERSÃO -------------");
-            System.out.println("Moeda fornecida: " + moedaUser + "\nQuantidade: " + quantidade);
+                gson.newBuilder().setPrettyPrinting().create();
 
-            System.out.println("\n------------- CONVERSÃO -------------");
-            System.out.println("Moeda convertida: "+ moedaConvert + "\nQuantidade: " + df.format(valor));
+                System.out.println("\n------------- CONVERSÃO -------------");
+                System.out.println("Moeda fornecida: " + moedaUser + "\nQuantidade: " + quantidade);
 
-            moedaFornecida.add(moedaUser);
-            moedaConvertida.add(moedaConvert);
-            moedaQuantidade.add(quantidade);
+                System.out.println("\n------------- CONVERSÃO -------------");
+                System.out.println("Moeda convertida: "+ moedaConvert + "\nQuantidade: " + df.format(valor));
+
+                moedaFornecida.add(moedaUser);
+                moedaConvertida.add(moedaConvert);
+                moedaQuantidade.add(quantidade);
+
+            } else {
+                System.out.println("UMA ou DUAS moedas incorretas!");
+            }
 
         } catch (IOException | InterruptedException e) {
             System.out.println("Não foi possivel verificar a cotação de preços");
